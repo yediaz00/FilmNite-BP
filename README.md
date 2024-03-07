@@ -1,5 +1,5 @@
-# trabalho
-¡El sistema de streaming en el que las trabas las pones tu!
+# FilmNite-BP
+FilmNite BP es una aplicación de streaming que permite a varios usuarios poder crear salas para ver contenido con sus amigos, con la posibilidad de sincronizar la reproducción del contenido entre todos ellos.
 
 ---
 
