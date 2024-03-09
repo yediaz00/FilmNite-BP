@@ -33,7 +33,11 @@ class MetaDataReaderImp(
             ?.use {
                 cursor->
                 val index=cursor.getColumnIndex(MediaStore.Video.VideoColumns.DISPLAY_NAME)
-                //16:52 video
+                cursor.moveToFirst()
+                cursor.getString(index)
             }
+        return fileName?.let { fullName->
+            MetaData(fileName=Uri.parse(fullName).lastPathSegment?:return null)
+        }
     }
 }

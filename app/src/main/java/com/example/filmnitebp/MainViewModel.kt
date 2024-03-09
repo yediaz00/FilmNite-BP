@@ -15,7 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    val player:Player
+    val player:Player,
+    private val metaDataReader: MetaDataReader
 ):ViewModel() {
 
     private val videoUris=savedStateHandle.getStateFlow("videoUris", emptyList<Uri>())
@@ -25,7 +26,7 @@ class MainViewModel @Inject constructor(
             VideoItem(
                 contentUri = uri,
                 mediaItem = MediaItem.fromUri(uri),
-                name="No name"
+                name=metaDataReader.getMetaDataFromUri(uri)?.fileName?:"No name"
             )
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())

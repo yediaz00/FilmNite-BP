@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id ("kotlin-kapt")
     id ("kotlin-parcelize")
+    id ("com.google.dagger.hilt.android")
 
 }
 
@@ -78,9 +79,13 @@ dependencies {
     implementation ("androidx.media3:media3-ui:1.0.0-beta02")
 
     // Dagger - Hilt
-    implementation ("com.google.dagger:hilt-android:2.42")
-    kapt ("com.google.dagger:hilt-android-compiler:2.42")
-    kapt ("androidx.hilt:hilt-compiler:1.0.0")
+    implementation ("com.google.dagger:hilt-android:2.46")
+    kapt  ("com.google.dagger:hilt-android-compiler:2.46")
+    kapt  ("androidx.hilt:hilt-compiler:1.0.0")
     implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
 
+
+}
+kapt {
+    correctErrorTypes
 }
