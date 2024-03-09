@@ -1,9 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id ("kotlin-kapt")
-    id ("kotlin-parcelize")
-    id ("com.google.dagger.hilt.android")
+
 
 }
 
@@ -63,6 +61,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.media3:media3-ui:1.3.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -72,20 +71,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
 
-    implementation ("androidx.compose.material:material-icons-extended:1.3.0-beta03")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
-
-    implementation ("androidx.media3:media3-exoplayer:1.0.0-beta02")
-    implementation ("androidx.media3:media3-ui:1.0.0-beta02")
-
-    // Dagger - Hilt
-    implementation ("com.google.dagger:hilt-android:2.46")
-    kapt  ("com.google.dagger:hilt-android-compiler:2.46")
-    kapt  ("androidx.hilt:hilt-compiler:1.0.0")
-    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation ("androidx.media3:media3-exoplayer:1.3.0")
 
 
-}
-kapt {
-    correctErrorTypes
 }
