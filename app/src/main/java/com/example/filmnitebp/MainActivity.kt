@@ -67,6 +67,8 @@ fun MainScreen(url:String){
     val playerView=PlayerView(context)
     playerView.systemUiVisibility
     playerView.player=exoPlayer
+   // val inicio=exoPlayer.currentPosition //ver el moment actual
+    // exoPlayer.seekTo(50000)   //Prueba para ver el seekto
     DisposableEffect(AndroidView(factory = {playerView.apply {
         player=exoPlayer
         useController=true
