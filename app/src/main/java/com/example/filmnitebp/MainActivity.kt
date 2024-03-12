@@ -18,6 +18,7 @@ import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.OptIn
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -50,6 +51,8 @@ import com.example.filmnitebp.ui.theme.FilmNiteBPTheme
 val url = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
 val url2 = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
 val url3="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
+val urlwebm="https://v.animethemes.moe/Toradora-ED1.webm"
+
 
 class MainActivity : ComponentActivity() {
 
@@ -69,7 +72,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen(url)
+                    MainScreen(urlwebm)
                 }
             }
         }
@@ -91,6 +94,7 @@ fun MainScreen(url:String){
 
 
     val playerView=PlayerView(context)
+
     var controllerStatus=false
 
 
@@ -106,6 +110,7 @@ fun MainScreen(url:String){
     // exoPlayer.seekTo(50000)   //Prueba para ver el seekto
 
     var offsetY by remember { mutableStateOf(0f) }
+    var offsetX by remember { mutableStateOf(0f) }
     DisposableEffect(AndroidView(factory = {playerView.apply {
         player=exoPlayer
         useController=true
@@ -115,8 +120,8 @@ fun MainScreen(url:String){
             ViewGroup.LayoutParams.MATCH_PARENT
         )
     }
-        },Modifier.pointerInput(Unit){
-
+        },Modifier
+            .pointerInput(Unit){
         detectVerticalDragGestures(onVerticalDrag = {change, dragAmount ->
             change.consume()
             offsetY=dragAmount//vemos cuanto se ha movido, si es positivo se ha movido hacia abajo, si es negatio hacia arriba
@@ -147,11 +152,28 @@ fun MainScreen(url:String){
 
                                          }, onDragCancel = {})
 
-        detectTapGestures(onTap = {}, onDoubleTap = {},
-            onLongPress = {}, onPress = {})//este no me funciona, a ver si alguien puede hacer algo
-
-
     }
+        .pointerInput(Unit){
+            detectHorizontalDragGestures(onHorizontalDrag = {change, dragAmount ->
+                offsetX=dragAmount
+            },
+                onDragStart = {}, onDragEnd = {
+                    Log.d("User Input", "Drag end lateral @ ${offsetX}")
+                }, onDragCancel = {})
+        }
+        .pointerInput(Unit){
+            detectTapGestures(onTap = {}, onDoubleTap = {
+                val posx=it.x
+                val posy=it.y
+                Log.d("User Input", "Double tap ${posx}")
+                exoPlayer.seekBack()
+            },
+                onLongPress = {
+                    Log.d("User Input", "Long press @ ")
+                }, onPress = {
+                    Log.d("User Input", "Press")
+                })
+        }
 
     ) ){
 
