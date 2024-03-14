@@ -38,7 +38,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.LoadControl
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.example.filmnitebp.ui.theme.FilmNiteBPTheme
@@ -85,10 +87,8 @@ fun MainScreen(url:String){
 
     val exoPlayer= ExoPlayer.Builder(context).build()
     val mediaItem= MediaItem.fromUri(Uri.parse(url))
+
     exoPlayer.setMediaItem(mediaItem)
-
-
-
     val playerView=PlayerView(context)
 
     var controllerStatus=false
@@ -161,15 +161,11 @@ fun MainScreen(url:String){
 
         }
         .pointerInput(Unit) {
-            detectHorizontalDragGestures(onHorizontalDrag = { change, dragAmount ->
-                offsetX = dragAmount
-            },
-                onDragStart = {}, onDragEnd = {
-                    Log.d("User Input", "Drag end lateral @ ${offsetX}")
-                }, onDragCancel = {})
-        }
-        .pointerInput(Unit) {
-            detectTapGestures(onTap = {}, onDoubleTap = {
+            detectTapGestures(onTap = {
+                val posxtap = it.x
+                Log.d("User Input", " tap x ${posxtap}")
+
+            }, onDoubleTap = {
                 val posx = it.x
                 val posy = it.y
                 Log.d("User Input", "Double tap x ${posx}")
@@ -188,6 +184,15 @@ fun MainScreen(url:String){
                     Log.d("User Input", "Press")
                 })
         }
+        .pointerInput(Unit) {
+            detectHorizontalDragGestures(onHorizontalDrag = { change, dragAmount ->
+                offsetX = dragAmount
+            },
+                onDragStart = {}, onDragEnd = {
+                    Log.d("User Input", "Drag end lateral @ ${offsetX}")
+                }, onDragCancel = {})
+        }
+
 
     ) ){
 
@@ -200,6 +205,7 @@ fun MainScreen(url:String){
         playerView.controllerHideOnTouch=false//Evitar que se quiten los controles con el toque
         playerView.controllerShowTimeoutMs=0//Nunca se van los ocntroles si estan en pantalla, de tal forma que haya que deslizar hacia abajo para quitarlos
         exoPlayer.playWhenReady=true
+
 
 
 
