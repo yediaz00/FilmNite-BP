@@ -9,24 +9,20 @@ import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
-
+import android.util.DisplayMetrics
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.widget.FrameLayout
-
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.OptIn
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
-
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
-
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -35,8 +31,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.Log
@@ -45,7 +42,6 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.example.filmnitebp.ui.theme.FilmNiteBPTheme
-
 
 
 val url = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
@@ -109,6 +105,10 @@ fun MainScreen(url:String){
    // val inicio=exoPlayer.currentPosition //ver el moment actual
     // exoPlayer.seekTo(50000)   //Prueba para ver el seekto
 
+    val configuration = LocalConfiguration.current
+
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
     var offsetY by remember { mutableStateOf(0f) }
     var offsetX by remember { mutableStateOf(0f) }
     DisposableEffect(AndroidView(factory = {playerView.apply {
@@ -120,53 +120,67 @@ fun MainScreen(url:String){
             ViewGroup.LayoutParams.MATCH_PARENT
         )
     }
-        },Modifier
-            .pointerInput(Unit){
-        detectVerticalDragGestures(onVerticalDrag = {change, dragAmount ->
-            change.consume()
-            offsetY=dragAmount//vemos cuanto se ha movido, si es positivo se ha movido hacia abajo, si es negatio hacia arriba
+        }, Modifier
+        .pointerInput(Unit) {
+            detectVerticalDragGestures(onVerticalDrag = { change, dragAmount ->
+                change.consume()
+                offsetY =
+                    dragAmount//vemos cuanto se ha movido, si es positivo se ha movido hacia abajo, si es negatio hacia arriba
 
-        },
-            onDragStart = {offset ->
-                //offsetY=offset.y
-            },onDragEnd = {
+            },
+                onDragStart = { offset ->
+                    //offsetY=offset.y
+                }, onDragEnd = {
 
-                if(offsetY<0){
-                    if(!controllerStatus) {
-                        playerView.useController = true
-                        playerView.showController()
-                        controllerStatus = true
-                    }else{
-                        Log.d("User Input", "Drag end arriba @ ${offsetY}") //esto es para ver el funcionamiento
+                    if (offsetY < 0) {
+                        if (!controllerStatus) {
+                            playerView.useController = true
+                            playerView.showController()
+                            controllerStatus = true
+                        } else {
+                            Log.d(
+                                "User Input",
+                                "Drag end arriba @ ${offsetY}"
+                            ) //esto es para ver el funcionamiento
+                        }
+                    } else {
+                        if (controllerStatus) {
+                            playerView.hideController()
+                            playerView.useController = false
+                            controllerStatus = false
+                        } else {
+                            Log.d(
+                                "User Input",
+                                "Drag end abajo @ ${offsetY}"
+                            )//esto es para ver el funcionamiento
+                        }
+
                     }
-                }else{
-                    if(controllerStatus){
-                        playerView.hideController()
-                        playerView.useController=false
-                        controllerStatus=false
-                    }else{
-                        Log.d("User Input", "Drag end abajo @ ${offsetY}")//esto es para ver el funcionamiento
-                    }
 
-                }
+                }, onDragCancel = {})
 
-                                         }, onDragCancel = {})
-
-    }
-        .pointerInput(Unit){
-            detectHorizontalDragGestures(onHorizontalDrag = {change, dragAmount ->
-                offsetX=dragAmount
+        }
+        .pointerInput(Unit) {
+            detectHorizontalDragGestures(onHorizontalDrag = { change, dragAmount ->
+                offsetX = dragAmount
             },
                 onDragStart = {}, onDragEnd = {
                     Log.d("User Input", "Drag end lateral @ ${offsetX}")
                 }, onDragCancel = {})
         }
-        .pointerInput(Unit){
+        .pointerInput(Unit) {
             detectTapGestures(onTap = {}, onDoubleTap = {
-                val posx=it.x
-                val posy=it.y
-                Log.d("User Input", "Double tap ${posx}")
-                exoPlayer.seekBack()
+                val posx = it.x
+                val posy = it.y
+                Log.d("User Input", "Double tap x ${posx}")
+                Log.d("User Input", "Double tap y ${posy}")
+
+                if( posx >= (screenWidth/2).value ){
+                    exoPlayer.seekForward(                                      )
+                }else{
+                    exoPlayer.seekBack()
+                }
+
             },
                 onLongPress = {
                     Log.d("User Input", "Long press @ ")
