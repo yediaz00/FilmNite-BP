@@ -24,22 +24,18 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Url
+import io.ktor.http.appendPathSegments
+import io.ktor.http.authority
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.net.HttpURLConnection
 import java.net.URL
 
-
 const val url = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-const val urlJ="http://piola.cloudns.nz:12012/sala/stream"
-
 
 @Suppress("DEPRECATION")
 class MainActivity : ComponentActivity() {
-
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,21 +43,18 @@ class MainActivity : ComponentActivity() {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-        val urlLista = Url("http://piola.cloudns.nz:12012/sala/lista");
+        val urlLista = AppVars.BASE_URL
+            .appendPathSegments("sala", "lista")
 
         val cliente = HttpClient()
 
-
-
-
         GlobalScope.launch {
-            val respuesta = cliente.get(urlLista)
+            val respuesta = cliente.get(urlLista.toString())
             val entrada = respuesta.body<String>()
-			
+
             val gson = Gson()
-			//todo Construir una instancia completa de Sala
-            val salita = gson?.fromJson(entrada, Sala.Stream::class.java)
-			AppVars.streamItem = salita!!
+            val salita = gson.fromJson(entrada, Sala::class.java)
+			AppVars.streamItem = salita!!.stream
 
             setContent {
                 FilmNiteBPTheme {

@@ -24,7 +24,7 @@ class HttpEchoingListener (
         scp.launch() {
             client.post(serverAPIUrl) {
                 url {
-                    appendPathSegments(if (isPlaying) "play" else "pause")
+                    appendPathSegments(if (isPlaying) "playPause" else "playPause")
                 }
             }
         }
@@ -39,10 +39,10 @@ class HttpEchoingListener (
         scp.launch() {
             client.post(serverAPIUrl) {
                 url {
-                    appendPathSegments("jump")
+                    appendPathSegments(
+                        "moveto",
+                        (newPosition.positionMs/1000.0).toString())
                 }
-                contentType(ContentType.Application.Json)
-                setBody(Jump(oldPosition, newPosition))
             }
         }
     }

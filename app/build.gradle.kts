@@ -78,5 +78,5 @@ dependencies {
     implementation ("androidx.media3:media3-exoplayer:1.3.0")
 
     implementation("io.ktor:ktor-client-core:2.3.9")
-
+    implementation("io.ktor:ktor-client-cio:2.3.9")
 }
