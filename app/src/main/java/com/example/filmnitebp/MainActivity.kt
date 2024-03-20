@@ -17,6 +17,7 @@ import com.example.filmnitebp.ui.theme.FilmNiteBPTheme
 
 
 const val url = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+const val urlJ="http://piola.cloudns.nz:12012/sala/stream"
 
 
 @Suppress("DEPRECATION")
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen(url)
+                    MainScreen(urlJ)
                 }
             }
         }
