@@ -29,48 +29,52 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
+import com.example.filmnitebp.states.AppVars
 
 
-
-    /*
-    * La siguiente función composible es usada para poder mostrar un reproductor de
-    * video el cual utiliza una url para poder streamear el video.
-    * */
+/*
+* La siguiente función composible es usada para poder mostrar un reproductor de
+* video el cual utiliza una url para poder streamear el video.
+* */
     @OptIn(UnstableApi::class)
     @Composable
-    fun MainScreen(url:String){
+    fun MainScreen(navController: NavController){
+    // Obtener la URL de la pantalla anterior
+    val backStackEntry: NavBackStackEntry? = navController.previousBackStackEntry
+    val url = "http://piola.cloudns.nz:12012"+AppVars.url
+    Screen()
 
-        Screen()
+    val context= LocalContext.current
+    val exoPlayer= ExoPlayer.Builder(context).build()
+    val mediaItem= MediaItem.fromUri(Uri.parse(url))//Aqui pasamos la uri del video
+    val playerView= PlayerView(context)
+    var controllerStatus=false//Esta variable se utiliza para el menu de controles
 
-        val context= LocalContext.current
-        val exoPlayer= ExoPlayer.Builder(context).build()
-        val mediaItem= MediaItem.fromUri(Uri.parse(url))//Aqui pasamos la uri del video
-        val playerView= PlayerView(context)
-        var controllerStatus=false//Esta variable se utiliza para el menu de controles
-
-        /*
-        * Tomamos las dimensiones de la pantalla para que el doble tap sea dinamico
-        * */
-        val displayMetrics = context.resources.displayMetrics
-        val width = displayMetrics.widthPixels
-        val height = displayMetrics.heightPixels
+    /*
+    * Tomamos las dimensiones de la pantalla para que el doble tap sea dinamico
+    * */
+    val displayMetrics = context.resources.displayMetrics
+    val width = displayMetrics.widthPixels
+    val height = displayMetrics.heightPixels
 
 
-        var offsetY by remember { mutableFloatStateOf(0f) }
-        var offsetX by remember { mutableFloatStateOf(0f) }
-        exoPlayer.setMediaItem(mediaItem)
-        playerView.player=exoPlayer
+    var offsetY by remember { mutableFloatStateOf(0f) }
+    var offsetX by remember { mutableFloatStateOf(0f) }
+    exoPlayer.setMediaItem(mediaItem)
+    playerView.player=exoPlayer
 
-        AndroidView(factory = {playerView.apply {
-            player=exoPlayer
-            useController=true
-            resizeMode= AspectRatioFrameLayout.RESIZE_MODE_FILL
-            layoutParams= FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-        }
-        }, Modifier
+    AndroidView(factory = {playerView.apply {
+        player=exoPlayer
+        useController=true
+        resizeMode= AspectRatioFrameLayout.RESIZE_MODE_FILL
+        layoutParams= FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+    }
+    }, Modifier
             /*
             * pointerInput se utiliza para poder ver los distintos eventos que ocurren por pantalla
             * de forma que tendremos que tener uno por cada evento que queramos ver.
